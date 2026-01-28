@@ -1,0 +1,1692 @@
+```html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>لعبة إكس-أو الحديثة</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #111827;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.15);
+      --accent-2: #a855f7;
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+      --danger: #f97373;
+      --success: #4ade80;
+      --border-soft: #1f2937;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.75);
+      --radius-lg: 18px;
+      --radius-xl: 26px;
+      --transition-fast: 0.18s ease-out;
+      --transition-med: 0.25s ease-out;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #1f2937 0, #020617 55%);
+      color: var(--text-main);
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 1100px;
+      margin: 16px;
+      background: linear-gradient(145deg, #020617 0, #020617 40%, #020617 100%);
+      border-radius: 32px;
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      box-shadow: 0 30px 80px rgba(15, 23, 42, 0.9);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .app-shell::before {
+      content: "";
+      position: absolute;
+      inset: -120px;
+      background:
+        radial-gradient(circle at 0 0, rgba(56, 189, 248, 0.12), transparent 55%),
+        radial-gradient(circle at 100% 0, rgba(168, 85, 247, 0.12), transparent 55%);
+      opacity: 0.9;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    header {
+      position: relative;
+      z-index: 1;
+      padding: 18px 22px 10px;
+      border-bottom: 1px solid rgba(31, 41, 55, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo {
+      width: 34px;
+      height: 34px;
+      border-radius: 14px;
+      background: conic-gradient(
+        from 210deg,
+        #38bdf8,
+        #a855f7,
+        #f97316,
+        #22c55e,
+        #38bdf8
+      );
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.9),
+        0 12px 30px rgba(15, 23, 42, 0.9);
+    }
+
+    .brand-logo-inner {
+      width: 72%;
+      height: 72%;
+      border-radius: 11px;
+      background: radial-gradient(circle at 30% 0, #e5f3ff 0, #0f172a 55%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #0f172a;
+      font-weight: 800;
+      font-size: 16px;
+    }
+
+    .brand-text-main {
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      font-size: 17px;
+    }
+
+    .brand-text-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: rgba(15, 23, 42, 0.85);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pill-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.25);
+    }
+
+    main {
+      position: relative;
+      z-index: 1;
+      flex: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      gap: 0;
+      min-height: 0;
+    }
+
+    @media (max-width: 900px) {
+      main {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .panel {
+      padding: 18px 22px 16px;
+      position: relative;
+    }
+
+    .panel + .panel {
+      border-right: 1px solid rgba(31, 41, 55, 0.85);
+    }
+
+    @media (max-width: 900px) {
+      .panel + .panel {
+        border-right: none;
+        border-top: 1px solid rgba(31, 41, 55, 0.85);
+      }
+    }
+
+    .panel-inner {
+      background: radial-gradient(circle at top, #020617 0, #020617 55%);
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      box-shadow: var(--shadow-soft);
+      padding: 18px 18px 16px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel-inner::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 0 0, rgba(56, 189, 248, 0.08), transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(168, 85, 247, 0.08), transparent 55%);
+      opacity: 0.9;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .panel-header {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .panel-title {
+      font-size: 18px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .panel-title span.icon {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 0, #e0f2fe 0, #0f172a 60%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      color: #0f172a;
+      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.9);
+    }
+
+    .panel-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .badge {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.9);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    .content {
+      position: relative;
+      z-index: 1;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      min-height: 0;
+    }
+
+    /* Start screen */
+
+    .start-screen {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      animation: fadeIn 0.35s var(--transition-med);
+    }
+
+    .mode-toggle {
+      display: flex;
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 999px;
+      padding: 4px;
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      width: fit-content;
+    }
+
+    .mode-btn {
+      flex: 1;
+      padding: 7px 14px;
+      border-radius: 999px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background var(--transition-fast), color var(--transition-fast),
+        transform var(--transition-fast), box-shadow var(--transition-fast);
+      white-space: nowrap;
+    }
+
+    .mode-btn span.icon {
+      font-size: 14px;
+    }
+
+    .mode-btn.active {
+      background: radial-gradient(circle at 0 0, #38bdf8 0, #0ea5e9 45%, #0369a1 100%);
+      color: #0b1120;
+      box-shadow: 0 10px 25px rgba(8, 47, 73, 0.7);
+      transform: translateY(-1px);
+      font-weight: 600;
+    }
+
+    .mode-btn:not(.active):hover {
+      background: rgba(15, 23, 42, 0.9);
+      color: #e5e7eb;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    @media (max-width: 600px) {
+      .form-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 13px;
+    }
+
+    .field-label {
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .field-label span.tag {
+      font-size: 11px;
+      padding: 1px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      color: var(--accent);
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .input {
+      border-radius: 999px;
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      background: rgba(15, 23, 42, 0.9);
+      padding: 8px 12px;
+      color: var(--text-main);
+      font-size: 13px;
+      outline: none;
+      transition: border var(--transition-fast), box-shadow var(--transition-fast),
+        background var(--transition-fast), transform var(--transition-fast);
+    }
+
+    .input::placeholder {
+      color: #6b7280;
+    }
+
+    .input:focus {
+      border-color: rgba(56, 189, 248, 0.9);
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.7),
+        0 0 0 10px rgba(56, 189, 248, 0.12);
+      background: #020617;
+      transform: translateY(-1px);
+    }
+
+    .helper-text {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .start-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 4px;
+      flex-wrap: wrap;
+    }
+
+    .primary-btn {
+      border-radius: 999px;
+      border: none;
+      padding: 9px 18px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      background: linear-gradient(135deg, #38bdf8, #0ea5e9, #22c55e);
+      color: #020617;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 16px 40px rgba(8, 47, 73, 0.9);
+      transition: transform var(--transition-med), box-shadow var(--transition-med),
+        filter var(--transition-med);
+      white-space: nowrap;
+    }
+
+    .primary-btn span.icon {
+      font-size: 16px;
+    }
+
+    .primary-btn:hover {
+      transform: translateY(-1.5px) scale(1.01);
+      filter: brightness(1.05);
+      box-shadow: 0 20px 55px rgba(8, 47, 73, 1);
+    }
+
+    .primary-btn:active {
+      transform: translateY(0) scale(0.99);
+      box-shadow: 0 10px 25px rgba(8, 47, 73, 0.9);
+    }
+
+    .start-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .chip {
+      padding: 3px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.9);
+      font-size: 11px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .chip span.dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent-2);
+    }
+
+    /* Game board */
+
+    .game-screen {
+      display: none;
+      flex-direction: column;
+      gap: 14px;
+      height: 100%;
+      animation: fadeIn 0.35s var(--transition-med);
+    }
+
+    .game-screen.active {
+      display: flex;
+    }
+
+    .game-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .players-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .player-pill {
+      padding: 6px 11px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.9);
+      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .player-pill span.mark {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 12px;
+      color: #020617;
+      background: radial-gradient(circle at 30% 0, #e0f2fe 0, #0ea5e9 55%);
+      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.9);
+    }
+
+    .player-pill span.mark.o {
+      background: radial-gradient(circle at 30% 0, #f5e0ff 0, #a855f7 55%);
+    }
+
+    .player-pill span.label {
+      color: var(--text-muted);
+    }
+
+    .player-pill span.name {
+      font-weight: 600;
+      color: #e5e7eb;
+    }
+
+    .status-pill {
+      padding: 6px 11px;
+      border-radius: 999px;
+      border: 1px solid rgba(56, 189, 248, 0.7);
+      background: rgba(8, 47, 73, 0.9);
+      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #e0f2fe;
+      box-shadow: 0 0 0 1px rgba(8, 47, 73, 0.9);
+    }
+
+    .status-pill span.dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #38bdf8;
+      box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.25);
+    }
+
+    .status-pill span.turn-mark {
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .game-middle {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      gap: 14px;
+      flex: 1;
+      min-height: 0;
+    }
+
+    @media (max-width: 900px) {
+      .game-middle {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .board-wrapper {
+      background: radial-gradient(circle at top, #020617 0, #020617 55%);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.9);
+    }
+
+    .board {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      min-height: 210px;
+    }
+
+    .cell {
+      border-radius: 18px;
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      background: radial-gradient(circle at 0 0, rgba(15, 23, 42, 0.9) 0, #020617 55%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(34px, 5vw, 44px);
+      font-weight: 800;
+      cursor: pointer;
+      color: #e5e7eb;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.9);
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast),
+        border var(--transition-fast), background var(--transition-fast),
+        color var(--transition-fast), filter var(--transition-fast);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cell::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 0 0, rgba(56, 189, 248, 0.12), transparent 55%);
+      opacity: 0;
+      transition: opacity var(--transition-fast);
+      pointer-events: none;
+    }
+
+    .cell:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 40px rgba(15, 23, 42, 1);
+      border-color: rgba(56, 189, 248, 0.7);
+    }
+
+    .cell:hover::before {
+      opacity: 1;
+    }
+
+    .cell.disabled {
+      cursor: default;
+      opacity: 0.6;
+      transform: none;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.9);
+    }
+
+    .cell.x {
+      color: #38bdf8;
+      text-shadow: 0 0 18px rgba(56, 189, 248, 0.7);
+    }
+
+    .cell.o {
+      color: #a855f7;
+      text-shadow: 0 0 18px rgba(168, 85, 247, 0.7);
+    }
+
+    .cell.win {
+      background: radial-gradient(circle at 0 0, rgba(34, 197, 94, 0.18), #022c22 70%);
+      border-color: rgba(34, 197, 94, 0.9);
+      box-shadow: 0 18px 45px rgba(22, 101, 52, 0.9);
+    }
+
+    .board-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .board-footer-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .tiny-pill {
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.9);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .tiny-pill span.dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    .ghost-btn {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: rgba(15, 23, 42, 0.9);
+      padding: 6px 12px;
+      font-size: 12px;
+      color: #e5e7eb;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background var(--transition-fast), transform var(--transition-fast),
+        box-shadow var(--transition-fast), border var(--transition-fast);
+    }
+
+    .ghost-btn:hover {
+      background: rgba(15, 23, 42, 1);
+      transform: translateY(-1px);
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.9);
+      border-color: rgba(56, 189, 248, 0.7);
+    }
+
+    .ghost-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.9);
+    }
+
+    .stats-card {
+      background: radial-gradient(circle at top, #020617 0, #020617 55%);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      padding: 12px 12px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.9);
+      min-height: 0;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    @media (max-width: 600px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    .stat-pill {
+      border-radius: 16px;
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      background: rgba(15, 23, 42, 0.95);
+      padding: 8px 9px;
+      font-size: 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .stat-label {
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .stat-value {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .stat-value.win {
+      color: var(--success);
+    }
+
+    .stat-value.lose {
+      color: var(--danger);
+    }
+
+    .stat-value.draw {
+      color: var(--accent);
+    }
+
+    .stat-tag {
+      padding: 1px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      font-size: 10px;
+      color: var(--accent);
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .hint-box {
+      border-radius: 16px;
+      border: 1px dashed rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.9);
+      padding: 8px 9px;
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: flex-start;
+      gap: 7px;
+    }
+
+    .hint-icon {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: rgba(56, 189, 248, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #38bdf8;
+      font-size: 11px;
+      flex-shrink: 0;
+    }
+
+    .hint-text strong {
+      color: #e5e7eb;
+      font-weight: 600;
+    }
+
+    .secondary-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .secondary-link {
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 11px;
+      cursor: pointer;
+      text-decoration: underline;
+      text-decoration-style: dotted;
+      text-underline-offset: 3px;
+      padding: 0;
+    }
+
+    .secondary-link:hover {
+      color: #e5e7eb;
+    }
+
+    /* Right panel: live preview / rules */
+
+    .preview-card {
+      background: radial-gradient(circle at top, #020617 0, #020617 55%);
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      padding: 16px 16px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.9);
+      height: 100%;
+    }
+
+    .preview-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .preview-title {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .preview-title-main {
+      font-size: 14px;
+      font-weight: 600;
+      color: #e5e7eb;
+    }
+
+    .preview-badge {
+      padding: 3px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.9);
+      font-size: 11px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .preview-badge span.dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent-2);
+    }
+
+    .preview-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .rules-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .rules-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .rules-bullet {
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      color: var(--accent);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .preview-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .preview-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .preview-tag {
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.9);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .preview-tag span.dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    /* Footer (mandatory) */
+
+    footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid rgba(31, 41, 55, 0.9);
+      padding: 8px 18px 10px;
+      background: rgba(2, 6, 23, 0.96);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 11px;
+      color: var(--text-muted);
+      flex-wrap: wrap;
+    }
+
+    .footer-section {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .footer-label {
+      color: #e5e7eb;
+      font-weight: 600;
+    }
+
+    .footer-pill {
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.9);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .footer-pill span.dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    .footer-pill span.dot.alt {
+      background: var(--accent-2);
+    }
+
+    .footer-pill span.dot.green {
+      background: var(--success);
+    }
+
+    @media (max-width: 700px) {
+      footer {
+        align-items: flex-start;
+      }
+    }
+
+    /* Animations */
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(4px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header>
+      <div class="brand">
+        <div class="brand-logo">
+          <div class="brand-logo-inner">XO</div>
+        </div>
+        <div>
+          <div class="brand-text-main">لعبة إكس-أو التفاعلية</div>
+          <div class="brand-text-sub">تجربة ممتعة لطلاب الويب – نمط لاعب واحد أو لاعبين</div>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="pill">
+          <span class="pill-dot"></span>
+          <span>جاهزة للّعب الآن</span>
+        </div>
+        <span>تصميم حديث • واجهة عربية • متجاوبة</span>
+      </div>
+    </header>
+
+    <main>
+      <!-- Left panel: start + game -->
+      <section class="panel">
+        <div class="panel-inner">
+          <div class="panel-header">
+            <div>
+              <div class="panel-title">
+                <span class="icon">🎮</span>
+                <span>منطقة اللعب</span>
+              </div>
+              <div class="panel-subtitle" id="panelSubtitle">
+                ابدأ بإدخال الأسماء واختيار نمط اللعب، ثم انطلق في التحدي.
+              </div>
+            </div>
+            <div class="badge">
+              <span class="badge-dot"></span>
+              <span id="modeBadgeText">نمط: لاعب واحد ضد الحاسوب</span>
+            </div>
+          </div>
+
+          <div class="content">
+            <!-- Start screen -->
+            <div class="start-screen" id="startScreen">
+              <div class="mode-toggle" aria-label="اختيار نمط اللعب">
+                <button class="mode-btn active" id="singleModeBtn" type="button">
+                  <span class="icon">🤖</span>
+                  <span>لاعب واحد ضد الحاسوب</span>
+                </button>
+                <button class="mode-btn" id="twoModeBtn" type="button">
+                  <span class="icon">👥</span>
+                  <span>نمط لاعبين</span>
+                </button>
+              </div>
+
+              <div class="form-grid">
+                <div class="field">
+                  <label class="field-label" for="player1Input">
+                    <span>اسم اللاعب الأول (X)</span>
+                    <span class="tag">إلزامي</span>
+                  </label>
+                  <input
+                    id="player1Input"
+                    class="input"
+                    type="text"
+                    placeholder="مثال: منصور"
+                    autocomplete="off"
+                  />
+                  <div class="helper-text">
+                    هذا اللاعب يستخدم الرمز <strong>X</strong> ويبدأ اللعب دائماً.
+                  </div>
+                </div>
+
+                <div class="field" id="player2Field">
+                  <label class="field-label" for="player2Input">
+                    <span>اسم اللاعب الثاني (O)</span>
+                    <span class="tag">اختياري في نمط لاعب واحد</span>
+                  </label>
+                  <input
+                    id="player2Input"
+                    class="input"
+                    type="text"
+                    placeholder="مثال: أحمد"
+                    autocomplete="off"
+                  />
+                  <div class="helper-text" id="player2Helper">
+                    في نمط لاعب واحد، سيتم استخدام الحاسوب كخصم تلقائياً.
+                  </div>
+                </div>
+              </div>
+
+              <div class="start-actions">
+                <button class="primary-btn" id="startGameBtn" type="button">
+                  <span class="icon">▶️</span>
+                  <span>ابدأ اللعبة الآن</span>
+                </button>
+
+                <div class="start-meta">
+                  <span>نصائح سريعة:</span>
+                  <div class="chips">
+                    <div class="chip">
+                      <span class="dot"></span>
+                      <span>يمكنك إعادة ضبط النتائج في أي وقت.</span>
+                    </div>
+                    <div class="chip">
+                      <span class="dot"></span>
+                      <span>اللعبة تعمل على الجوال والحاسوب بسلاسة.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Game screen -->
+            <div class="game-screen" id="gameScreen">
+              <div class="game-top">
+                <div class="players-info">
+                  <div class="player-pill">
+                    <span class="mark">X</span>
+                    <span class="label">اللاعب الأول:</span>
+                    <span class="name" id="p1NameLabel">لاعب 1</span>
+                  </div>
+                  <div class="player-pill">
+                    <span class="mark o">O</span>
+                    <span class="label">اللاعب الثاني:</span>
+                    <span class="name" id="p2NameLabel">الحاسوب</span>
+                  </div>
+                </div>
+                <div class="status-pill" id="statusPill">
+                  <span class="dot"></span>
+                  <span>الدور الحالي:</span>
+                  <span class="turn-mark" id="turnMark">X</span>
+                  <span id="turnPlayerName">اللاعب الأول</span>
+                </div>
+              </div>
+
+              <div class="game-middle">
+                <div class="board-wrapper">
+                  <div class="board" id="board">
+                    <button class="cell" data-index="0" type="button"></button>
+                    <button class="cell" data-index="1" type="button"></button>
+                    <button class="cell" data-index="2" type="button"></button>
+                    <button class="cell" data-index="3" type="button"></button>
+                    <button class="cell" data-index="4" type="button"></button>
+                    <button class="cell" data-index="5" type="button"></button>
+                    <button class="cell" data-index="6" type="button"></button>
+                    <button class="cell" data-index="7" type="button"></button>
+                    <button class="cell" data-index="8" type="button"></button>
+                  </div>
+
+                  <div class="board-footer">
+                    <div class="board-footer-left">
+                      <div class="tiny-pill">
+                        <span class="dot"></span>
+                        <span id="boardStatusText">ضع ثلاثة رموز متتالية للفوز.</span>
+                      </div>
+                    </div>
+                    <div>
+                      <button class="ghost-btn" id="resetRoundBtn" type="button">
+                        <span>🔄</span>
+                        <span>جولة جديدة</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="stats-card">
+                  <div class="panel-header" style="padding:0;">
+                    <div>
+                      <div class="panel-title" style="font-size:15px;">
+                        <span class="icon">📊</span>
+                        <span>النتائج والإحصائيات</span>
+                      </div>
+                      <div class="panel-subtitle">
+                        تابع عدد الانتصارات والتعادلات لكل لاعب خلال الجلسة الحالية.
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="stats-grid">
+                    <div class="stat-pill">
+                      <div class="stat-label">
+                        <span>انتصارات اللاعب الأول (X)</span>
+                        <span class="stat-tag">اللاعب 1</span>
+                      </div>
+                      <div class="stat-value win" id="p1Wins">0</div>
+                    </div>
+                    <div class="stat-pill">
+                      <div class="stat-label">
+                        <span>انتصارات اللاعب الثاني (O)</span>
+                        <span class="stat-tag">اللاعب 2</span>
+                      </div>
+                      <div class="stat-value lose" id="p2Wins">0</div>
+                    </div>
+                    <div class="stat-pill">
+                      <div class="stat-label">
+                        <span>التعادلات</span>
+                        <span class="stat-tag">بدون فائز</span>
+                      </div>
+                      <div class="stat-value draw" id="draws">0</div>
+                    </div>
+                  </div>
+
+                  <div class="hint-box">
+                    <div class="hint-icon">💡</div>
+                    <div class="hint-text" id="hintText">
+                      <strong>تلميح:</strong> حاول السيطرة على المربعات الوسطى والزوايا لزيادة فرص الفوز.
+                    </div>
+                  </div>
+
+                  <div class="secondary-actions">
+                    <button class="ghost-btn" id="restartMatchBtn" type="button">
+                      <span>🧹</span>
+                      <span>إعادة ضبط النتائج بالكامل</span>
+                    </button>
+                    <button class="secondary-link" id="backToStartBtn" type="button">
+                      العودة إلى شاشة البداية لتغيير الأسماء أو النمط
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right panel: rules / live info -->
+      <section class="panel">
+        <div class="panel-inner">
+          <div class="preview-card">
+            <div class="preview-header">
+              <div class="preview-title">
+                <span class="preview-title-main">نظرة عامة وتعليمات سريعة</span>
+                <span>تعرف على قواعد اللعبة وبعض النصائح قبل البدء.</span>
+              </div>
+              <div class="preview-badge">
+                <span class="dot"></span>
+                <span id="previewModeLabel">الوضع الحالي: لاعب واحد</span>
+              </div>
+            </div>
+
+            <div class="preview-body">
+              <div>
+                <strong>قواعد لعبة إكس-أو:</strong>
+              </div>
+              <ul class="rules-list">
+                <li>
+                  <div class="rules-bullet">1</div>
+                  <div>اللاعب الأول يستخدم الرمز <strong>X</strong> ويبدأ دائماً، واللاعب الثاني يستخدم الرمز <strong>O</strong>.</div>
+                </li>
+                <li>
+                  <div class="rules-bullet">2</div>
+                  <div>الفائز هو من يضع ثلاثة من رموزه في صف واحد (أفقي، عمودي، أو قطري).</div>
+                </li>
+                <li>
+                  <div class="rules-bullet">3</div>
+                  <div>في نمط لاعب واحد، يقوم الحاسوب بالرد تلقائياً بعد كل حركة تقوم بها.</div>
+                </li>
+                <li>
+                  <div class="rules-bullet">4</div>
+                  <div>يمكنك بدء جولة جديدة أو إعادة ضبط النتائج بالكامل في أي وقت.</div>
+                </li>
+              </ul>
+
+              <div>
+                <strong>نصائح للفوز:</strong>
+              </div>
+              <ul class="rules-list">
+                <li>
+                  <div class="rules-bullet">✓</div>
+                  <div>ابدأ من المربع الأوسط إن أمكن، فهو يمنحك خيارات أكثر للفوز.</div>
+                </li>
+                <li>
+                  <div class="rules-bullet">✓</div>
+                  <div>حاول منع خصمك من تكوين صفين متقاطعين في نفس الوقت.</div>
+                </li>
+                <li>
+                  <div class="rules-bullet">✓</div>
+                  <div>استخدم الزوايا بذكاء، فهي مفتاح الكثير من الاستراتيجيات.</div>
+                </li>
+              </ul>
+            </div>
+
+            <div class="preview-footer">
+              <div class="preview-tags">
+                <div class="preview-tag">
+                  <span class="dot"></span>
+                  <span>متجاوبة مع الجوال</span>
+                </div>
+                <div class="preview-tag">
+                  <span class="dot"></span>
+                  <span>واجهة عربية بالكامل</span>
+                </div>
+                <div class="preview-tag">
+                  <span class="dot"></span>
+                  <span>نمط لاعب واحد ولاعبين</span>
+                </div>
+              </div>
+              <span>استمتع باللعب وجرّب استراتيجيات مختلفة في كل جولة.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer-section">
+        <span class="footer-label">Student Name:</span>
+        <div class="footer-pill">
+          <span class="dot"></span>
+          <span>MANSOUR SAHAL MANSOUR ALSHARIF</span>
+        </div>
+        <div class="footer-pill">
+          <span class="dot alt"></span>
+          <span>منصور سهل بن منصور العبدلي الشريف</span>
+        </div>
+      </div>
+      <div class="footer-section">
+        <div class="footer-pill">
+          <span class="dot green"></span>
+          <span>Student ID: 446003880</span>
+        </div>
+        <div class="footer-pill">
+          <span class="dot"></span>
+          <span>Supervised by: Mohammed Ahmed Jabali</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // عناصر واجهة المستخدم
+    const startScreen = document.getElementById("startScreen");
+    const gameScreen = document.getElementById("gameScreen");
+    const singleModeBtn = document.getElementById("singleModeBtn");
+    const twoModeBtn = document.getElementById("twoModeBtn");
+    const player2Field = document.getElementById("player2Field");
+    const player2Helper = document.getElementById("player2Helper");
+    const player1Input = document.getElementById("player1Input");
+    const player2Input = document.getElementById("player2Input");
+    const startGameBtn = document.getElementById("startGameBtn");
+    const panelSubtitle = document.getElementById("panelSubtitle");
+    const modeBadgeText = document.getElementById("modeBadgeText");
+    const previewModeLabel = document.getElementById("previewModeLabel");
+
+    const p1NameLabel = document.getElementById("p1NameLabel");
+    const p2NameLabel = document.getElementById("p2NameLabel");
+    const statusPill = document.getElementById("statusPill");
+    const turnMarkSpan = document.getElementById("turnMark");
+    const turnPlayerNameSpan = document.getElementById("turnPlayerName");
+    const boardStatusText = document.getElementById("boardStatusText");
+    const hintText = document.getElementById("hintText");
+
+    const boardEl = document.getElementById("board");
+    const cells = Array.from(document.querySelectorAll(".cell"));
+    const resetRoundBtn = document.getElementById("resetRoundBtn");
+    const restartMatchBtn = document.getElementById("restartMatchBtn");
+    const backToStartBtn = document.getElementById("backToStartBtn");
+
+    const p1WinsEl = document.getElementById("p1Wins");
+    const p2WinsEl = document.getElementById("p2Wins");
+    const drawsEl = document.getElementById("draws");
+
+    // حالة اللعبة
+    let isSinglePlayer = true;
+    let player1Name = "لاعب 1";
+    let player2Name = "الحاسوب";
+    let board = Array(9).fill(null);
+    let currentPlayer = "X";
+    let gameOver = false;
+    let stats = {
+      p1Wins: 0,
+      p2Wins: 0,
+      draws: 0,
+    };
+
+    const winningCombos = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6],
+    ];
+
+    // دوال مساعدة
+    function updateModeUI() {
+      if (isSinglePlayer) {
+        singleModeBtn.classList.add("active");
+        twoModeBtn.classList.remove("active");
+        player2Helper.textContent =
+          "في نمط لاعب واحد، سيتم استخدام الحاسوب كخصم تلقائياً.";
+        modeBadgeText.textContent = "نمط: لاعب واحد ضد الحاسوب";
+        previewModeLabel.textContent = "الوضع الحالي: لاعب واحد";
+      } else {
+        twoModeBtn.classList.add("active");
+        singleModeBtn.classList.remove("active");
+        player2Helper.textContent =
+          "في نمط لاعبين، أدخل اسم اللاعب الثاني أو اتركه افتراضياً.";
+        modeBadgeText.textContent = "نمط: لاعبين (وجهاً لوجه)";
+        previewModeLabel.textContent = "الوضع الحالي: لاعبين";
+      }
+    }
+
+    function sanitizeName(value, fallback) {
+      const trimmed = (value || "").trim();
+      return trimmed.length ? trimmed : fallback;
+    }
+
+    function updateTurnUI() {
+      turnMarkSpan.textContent = currentPlayer;
+      const name =
+        currentPlayer === "X" ? player1Name : player2Name;
+      turnPlayerNameSpan.textContent = name;
+      boardStatusText.textContent = `الدور على: ${name} (${currentPlayer})`;
+    }
+
+    function clearBoardUI() {
+      cells.forEach((cell) => {
+        cell.textContent = "";
+        cell.classList.remove("x", "o", "win", "disabled");
+      });
+    }
+
+    function resetRound() {
+      board = Array(9).fill(null);
+      currentPlayer = "X";
+      gameOver = false;
+      clearBoardUI();
+      updateTurnUI();
+      statusPill.style.borderColor = "rgba(56, 189, 248, 0.7)";
+      statusPill.style.background = "rgba(8, 47, 73, 0.9)";
+      boardStatusText.textContent = "ضع ثلاثة رموز متتالية للفوز.";
+      hintText.innerHTML =
+        "<strong>تلميح:</strong> حاول السيطرة على المربعات الوسطى والزوايا لزيادة فرص الفوز.";
+    }
+
+    function updateStatsUI() {
+      p1WinsEl.textContent = stats.p1Wins;
+      p2WinsEl.textContent = stats.p2Wins;
+      drawsEl.textContent = stats.draws;
+    }
+
+    function checkWinner() {
+      for (const combo of winningCombos) {
+        const [a, b, c] = combo;
+        if (
+          board[a] &&
+          board[a] === board[b] &&
+          board[a] === board[c]
+        ) {
+          return { winner: board[a], combo };
+        }
+      }
+      if (board.every((cell) => cell !== null)) {
+        return { winner: null, combo: null }; // تعادل
+      }
+      return null;
+    }
+
+    function highlightWinningCombo(combo) {
+      combo.forEach((index) => {
+        const cell = cells[index];
+        cell.classList.add("win");
+      });
+    }
+
+    function disableBoard() {
+      cells.forEach((cell) => cell.classList.add("disabled"));
+    }
+
+    function enableBoard() {
+      cells.forEach((cell) => cell.classList.remove("disabled"));
+    }
+
+    function handleGameEnd(result) {
+      gameOver = true;
+      disableBoard();
+
+      if (result.winner === "X") {
+        stats.p1Wins++;
+        updateStatsUI();
+        statusPill.style.borderColor = "rgba(34, 197, 94, 0.9)";
+        statusPill.style.background = "rgba(22, 101, 52, 0.9)";
+        boardStatusText.textContent = `فوز ${player1Name} (X)!`;
+        hintText.innerHTML =
+          "<strong>أحسنت!</strong> يمكنك تجربة استراتيجية مختلفة في الجولة التالية.";
+      } else if (result.winner === "O") {
+        stats.p2Wins++;
+        updateStatsUI();
+        statusPill.style.borderColor = "rgba(248, 113, 113, 0.9)";
+        statusPill.style.background = "rgba(127, 29, 29, 0.9)";
+        boardStatusText.textContent = `فوز ${player2Name} (O)!`;
+        hintText.innerHTML =
+          "<strong>لا بأس!</strong> حاول التركيز على منع خصمك من تكوين صف متكامل.";
+      } else {
+        stats.draws++;
+        updateStatsUI();
+        statusPill.style.borderColor = "rgba(56, 189, 248, 0.7)";
+        statusPill.style.background = "rgba(15, 23, 42, 0.9)";
+        boardStatusText.textContent = "تعادل! لا يوجد فائز في هذه الجولة.";
+        hintText.innerHTML =
+          "<strong>تعادل جميل!</strong> جرب تغيير أول حركة لك في الجولة القادمة.";
+      }
+
+      if (result.combo) {
+        highlightWinningCombo(result.combo);
+      }
+    }
+
+    // ذكاء بسيط للحاسوب: اختيار أول خانة فارغة، مع محاولة الفوز أو المنع أولاً
+    function computerMove() {
+      if (!isSinglePlayer || gameOver) return;
+
+      // 1) محاولة الفوز إن أمكن
+      for (const combo of winningCombos) {
+        const [a, b, c] = combo;
+        const line = [board[a], board[b], board[c]];
+        const countO = line.filter((v) => v === "O").length;
+        const countEmpty = line.filter((v) => v === null).length;
+        if (countO === 2 && countEmpty === 1) {
+          const emptyIndex = combo[line.indexOf(null)];
+          makeMove(emptyIndex, "O");
+          return;
+        }
+      }
+
+      // 2) محاولة منع اللاعب من الفوز
+      for (const combo of winningCombos) {
+        const [a, b, c] = combo;
+        const line = [board[a], board[b], board[c]];
+        const countX = line.filter((v) => v === "X").length;
+        const countEmpty = line.filter((v) => v === null).length;
+        if (countX === 2 && countEmpty === 1) {
+          const emptyIndex = combo[line.indexOf(null)];
+          makeMove(emptyIndex, "O");
+          return;
+        }
+      }
+
+      // 3) اختيار المربع الأوسط إن كان فارغاً
+      if (board[4] === null) {
+        makeMove(4, "O");
+        return;
+      }
+
+      // 4) اختيار أي خانة فارغة (بترتيب بسيط)
+      const emptyIndices = board
+        .map((value, index) => (value === null ? index : null))
+        .filter((v) => v !== null);
+
+      if (emptyIndices.length > 0) {
+        const randomIndex =
+          emptyIndices[Math.floor(Math.random() * emptyIndices.length)];
+        makeMove(randomIndex, "O");
+      }
+    }
+
+    function makeMove(index, player) {
+      if (board[index] !== null || gameOver) return;
+
+      board[index] = player;
+      const cell = cells[index];
+      cell.textContent = player;
+      cell.classList.add(player.toLowerCase());
+
+      const result = checkWinner();
+      if (result) {
+        handleGameEnd(result);
+        return;
+      }
+
+      currentPlayer = player === "X" ? "O" : "X";
+      updateTurnUI();
+
+      if (isSinglePlayer && currentPlayer === "O") {
+        // تأخير بسيط لإحساس أفضل
+        disableBoard();
+        setTimeout(() => {
+          enableBoard();
+          computerMove();
+        }, 450);
+      }
+    }
+
+    // الأحداث
+    singleModeBtn.addEventListener("click", () => {
+      isSinglePlayer = true;
+      updateModeUI();
+    });
+
+    twoModeBtn.addEventListener("click", () => {
+      isSinglePlayer = false;
+      updateModeUI();
+    });
+
+    startGameBtn.addEventListener("click", () => {
+      player1Name = sanitizeName(player1Input.value, "اللاعب الأول");
+      if (isSinglePlayer) {
+        player2Name = "الحاسوب";
+      } else {
+        player2Name = sanitizeName(player2Input.value, "اللاعب الثاني");
+      }
+
+      p1NameLabel.textContent = player1Name;
+      p2NameLabel.textContent = player2Name;
+
+      panelSubtitle.textContent =
+        "اللعبة قيد التشغيل الآن. يمكنك اللعب عدة جولات وتتبع النتائج في الأسفل.";
+
+      startScreen.style.display = "none";
+      gameScreen.classList.add("active");
+
+      resetRound();
+    });
+
+    cells.forEach((cell) => {
+      cell.addEventListener("click", () => {
+        const index = parseInt(cell.getAttribute("data-index"), 10);
+        if (currentPlayer === "X") {
+          makeMove(index, "X");
+        } else if (!isSinglePlayer) {
+          // في نمط لاعبين، يمكن للاعب O اللعب يدوياً
+          makeMove(index, "O");
+        }
+      });
+    });
+
+    resetRoundBtn.addEventListener("click", () => {
+      resetRound();
+    });
+
+    restartMatchBtn.addEventListener("click", () => {
+      stats = { p1Wins: 0, p2Wins: 0, draws: 0 };
+      updateStatsUI();
+      resetRound();
+      hintText.innerHTML =
+        "<strong>تمت إعادة ضبط النتائج.</strong> ابدأ سلسلة جديدة من الجولات واستكشف استراتيجيات مختلفة.";
+    });
+
+    backToStartBtn.addEventListener("click", () => {
+      gameScreen.classList.remove("active");
+      startScreen.style.display = "flex";
+      panelSubtitle.textContent =
+        "ابدأ بإدخال الأسماء واختيار نمط اللعب، ثم انطلق في التحدي.";
+      resetRound();
+    });
+
+    // تهيئة أولية
+    updateModeUI();
+    updateStatsUI();
+  </script>
+</body>
+</html>
+```
